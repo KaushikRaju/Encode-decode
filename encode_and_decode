@@ -3,9 +3,9 @@ import numpy as np
 
 ## Please change Image path while executing locally 
 
-box = cv2.imread('Downloads/Acviss_assignment/Assignment1 -- Labels/resources/box.png') # loading the box image
-circle = cv2.imread('Downloads/Acviss_assignment/Assignment1 -- Labels/resources/circle.png') # loading the circle image
-dot = cv2.imread('Downloads/Acviss_assignment/Assignment1 -- Labels/resources/dot.png') # loading the dot image
+box = cv2.imread('/resources/box.png') # loading the box image
+circle = cv2.imread('/resources/circle.png') # loading the circle image
+dot = cv2.imread('/resources/dot.png') # loading the dot image
 
 ##ENCODING GIVEN NUMBER TO AN IMAGE
 while True:
