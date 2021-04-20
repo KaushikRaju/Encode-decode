@@ -1,0 +1,99 @@
+import cv2
+import numpy as np
+
+## Please change Image path while executing locally 
+
+box = cv2.imread('Downloads/Acviss_assignment/Assignment1 -- Labels/resources/box.png') # loading the box image
+circle = cv2.imread('Downloads/Acviss_assignment/Assignment1 -- Labels/resources/circle.png') # loading the circle image
+dot = cv2.imread('Downloads/Acviss_assignment/Assignment1 -- Labels/resources/dot.png') # loading the dot image
+
+##ENCODING GIVEN NUMBER TO AN IMAGE
+while True:
+    x = input("Enter a number in the range 0-15 or type 'quit' to exit from program\n")
+    if x == "quit":
+        break
+    else:
+        try:
+            num = int(x)
+            if num>=0 and num<=15:
+                bnr = bin(num).replace('0b','')
+                x = bnr[::-1] #this reverses an array
+                while len(x) < 4:
+                    x += '0'
+                bnr = x[::-1]
+                b = list(bnr)
+                count = 0
+                dst = cv2.bitwise_and(circle,box,mask= None)
+                for i in b:
+                    if count==0:
+                        if i=='0':
+                            count = count+1
+                            continue 
+                        elif i=='1':
+                            dst[380:400, 380:400]=dot
+                            count = count+1
+                    elif count==1:
+                        if i=='0':
+                            count = count+1
+                            continue
+                        elif i=='1':
+                            dst[380:400, 580:600]=dot
+                            count = count+1
+                    elif count==2:
+                        if i=='0':
+                            count = count+1
+                            continue
+                        elif i=='1':
+                            dst[580:600, 380:400]=dot
+                            count = count+1
+                    elif count==3:
+                        if i=='0':
+                            count = count+1
+                            continue 
+                        elif i=='1':
+                            dst[580:600, 580:600]=dot
+                            count = count+1
+##DECODING THE OUTPUT IMAGE
+
+                # Number of pieces Horizontally 
+                CROP_W_SIZE  = 2 
+                # Number of pieces Vertically to each Horizontal  
+                CROP_H_SIZE = 2
+                height, width, channels = dst.shape
+                img2 = dst
+                st = ""
+                for ih in range(CROP_H_SIZE ):
+                    for iw in range(CROP_W_SIZE ):
+
+                        x = width/CROP_W_SIZE * iw 
+                        y = height/CROP_H_SIZE * ih
+                        h = (height / CROP_H_SIZE)
+                        w = (width / CROP_W_SIZE )
+                        dst = dst[int(y):int(y+h), int(x):int(x+w)]
+                        gray = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
+
+                        # Find Canny edges
+                        edged = cv2.Canny(gray, 30, 200)
+                        cv2.waitKey(0)
+
+                        # Finding Contours
+                        contours, hierarchy = cv2.findContours(edged, 
+                            cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+
+                        if str(len(contours))=='3':
+                            st += '0'
+                        elif str(len(contours))=='4':
+                            st += '1'
+
+                        dst = img2
+                print("Decoded image value",int(st,2))
+                cv2.imshow('box',img2)
+                cv2.waitKey(0) 
+                cv2.destroyAllWindows()
+            else:
+                raise ValueError("Please enter a valid number within the range\n")
+                continue
+        except ValueError as ve:
+            print(ve)
+
